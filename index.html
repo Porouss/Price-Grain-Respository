@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คำนวณราคาประกาศรับซื้อข้าวโพดอาหารสัตว์</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#fff;--page:#eef2ef;--ink:#101412;--muted:#5b6660;--line:#e1e7e3;--field:#f5f8f6;--green:#0b3d2e;--green2:#17704f;--hi:#e4f0e9;--zebra:#f7faf8;--shadow:0 1px 2px rgba(11,61,46,.06),0 8px 24px rgba(11,61,46,.07);--warn:#8a4b00;
+box-sizing:border-box;padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171c19;--page:#0e1210;--ink:#f1f4f2;--muted:#a1ada6;--line:#2a332e;--field:#1f2622;--green2:#6fc29b;--hi:#203028;--zebra:#1b211e;--shadow:0 8px 24px rgba(0,0,0,.35);--warn:#e0b25a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171c19;--page:#0e1210;--ink:#f1f4f2;--muted:#a1ada6;--line:#2a332e;--field:#1f2622;--green2:#6fc29b;--hi:#203028;--zebra:#1b211e;--shadow:0 8px 24px rgba(0,0,0,.35);--warn:#e0b25a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"IBM Plex Sans Thai",system-ui,sans-serif;line-height:1.6}
+.top{background:var(--green);color:#fff;padding:calc(34px + env(safe-area-inset-top,0px)) 20px 78px}
+.top .in{max-width:1040px;margin:0 auto}
+h1{font-size:clamp(1.5rem,4vw,2.1rem);font-weight:700;margin:0;line-height:1.25;letter-spacing:-.01em}
+main{max-width:1040px;margin:-48px auto 0;padding:0 16px 56px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:20px;align-items:start}
+.side{position:sticky;top:16px;display:grid;gap:16px}
+.panel{background:var(--bg);border-radius:16px;box-shadow:var(--shadow);padding:20px;counter-increment:s}
+.side{counter-reset:s}
+.panel h2{display:flex;align-items:center;gap:10px;font-size:1.02rem;font-weight:600;margin:0 0 14px}
+.panel h2::before{content:counter(s);display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-size:.82rem;font-weight:600}
+.grid{display:grid;gap:14px}
+label{display:block;font-size:.84rem;font-weight:500;color:var(--muted)}
+input{width:100%;margin-top:6px;padding:11px 13px;font:inherit;font-size:1.05rem;font-weight:500;color:var(--ink);background:var(--field);border:1.5px solid transparent;border-radius:10px;transition:border-color .15s,background .15s}
+input:hover{border-color:var(--line)}
+input:focus{outline:none;border-color:var(--green2);background:var(--bg)}
+input::placeholder{font-weight:400;font-size:.9rem}
+.hint{font-size:.78rem;color:var(--muted);margin-top:3px;font-weight:400}
+.sum{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.sum span{background:var(--hi);border-radius:999px;padding:3px 12px;font-size:.82rem}
+.sum b{font-weight:700}
+.warn{color:var(--warn);font-size:.84rem;margin-top:10px}
+.res{min-width:0}
+.bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.bar .hint{flex-basis:100%;margin:0}
+button{font:inherit;font-weight:600;padding:11px 20px;border:0;color:#fff;background:var(--green);border-radius:10px;cursor:pointer;box-shadow:var(--shadow);transition:background .15s}
+button:hover{background:var(--green2)}
+button:focus-visible{outline:2px solid var(--green2);outline-offset:2px}
+.sec{background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.sec:hover{background:var(--hi)}
+.tw{overflow-x:auto;background:var(--bg);border-radius:16px;box-shadow:var(--shadow)}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:1rem}
+th{background:var(--green);color:#fff;font-weight:600;padding:13px 18px;text-align:right}
+th:first-child,td:first-child{text-align:left}
+td{padding:9px 18px;text-align:right;border-bottom:1px solid var(--line);color:var(--muted)}
+td:first-child{color:var(--ink)}
+td:nth-child(2){font-weight:700;color:var(--ink);font-size:1.05rem}
+tbody tr:nth-child(even){background:var(--zebra)}
+tbody tr:first-child{background:var(--hi)}
+tbody tr:last-child td{border-bottom:0}
+.empty{padding:56px 20px;text-align:center;color:var(--muted)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.pr{display:none}
+@media (max-width:820px){main{grid-template-columns:minmax(0,1fr)}.side{position:static}.top{padding-bottom:70px}}
+@media print{body{background:#fff;color:#000}.top,.side,.bar{display:none!important}main{display:block;margin:0;padding:0;max-width:none}.pr{display:block}.pr h2{margin:0;font-size:17pt;color:#0b3d2e}.pr p{margin:2px 0 10px;color:#444;font-size:11pt}.tw{box-shadow:none;border-radius:0}table{font-size:10.5pt}th{background:#0b3d2e!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:6px 10px}td{padding:2px 10px;color:#000;border-bottom:1px solid #ccc}tbody tr:nth-child(even),tbody tr:first-child{background:#eef3f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4;margin:14mm}}
+</style>
+</head>
+<body>
+<header class="top"><div class="in"><h1>คำนวณราคาประกาศรับซื้อข้าวโพดอาหารสัตว์</h1></div></header>
+<main>
+
+
+<div class="side">
+<section class="panel">
+<h2>1. ราคาและกำไร</h2>
+<div class="grid">
+<label>ราคาที่ความชื้น 14.5% (FG) (บาท/กก.)<input id="base" type="number" step="any"></label>
+<label>กำไรที่ต้องการ (บาท/กก.)<input id="profit" type="number" step="any"></label>
+</div>
+</section>
+
+<section class="panel">
+<h2>2. ค่าขนส่ง</h2>
+<div class="grid">
+<label>ระยะทาง (กม.)<input id="dist" type="number" step="any"><div class="hint">ตารางรองรับ 0–600 กม.</div></label>
+<label>ราคาน้ำมัน (บาท/ลิตร)<input id="fuel" type="number" step="any" placeholder="41.79"><div class="hint">ดีเซล B7 วันนี้ 41.79 บาท/ลิตร (7 พ.ย. 2569) · ตารางรองรับ 25.19–50.19</div></label>
+<label>ใช้ค่าขนส่งที่กำหนดเอง (บาท/กก.)<input id="tover" type="number" step="any" placeholder="เว้นว่างเพื่อใช้ตาราง"></label>
+</div>
+<div class="sum" id="sum" style="margin-top:12px"></div>
+<div class="warn" id="warn"></div>
+</section>
+</div>
+<div class="res">
+<div class="bar"><button id="print">บันทึกเป็น PDF</button><button id="copy" class="sec">คัดลอกตาราง</button>
+<div class="hint" id="phint">ไฟล์ PDF แสดงเฉพาะตารางราคาและวันที่ประกาศ ไม่มีค่าขนส่งและกำไร</div></div>
+
+
+<div class="pr"><h2>ประกาศราคารับซื้อข้าวโพดอาหารสัตว์</h2><p>ประกาศ ณ วันที่ <span id="pd"></span> · หน่วย: บาท/กก.</p></div>
+<div class="tw" id="out"></div>
+
+</div>
+</main>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)};
+var r2=function(x){return Math.round((x+1e-9)*100)/100};
+var f=function(x){return x.toFixed(2)};
+var rows=32,START=[137,193,249,304,360,416,472,527,583,638,694,749],BASE_FUEL=25.19,COLS=26,STEP=3;
+var data=null;
+function transport(){
+  var o=$('tover').value,w=$('warn'),S=$('sum');w.textContent='';
+  if(o!==''&&!isNaN(parseFloat(o))){S.innerHTML='<span>ใช้ค่าที่กำหนดเอง <b>'+parseFloat(o).toFixed(3)+'</b> บาท/กก.</span>';return parseFloat(o)}
+  var ds=$('dist').value,ps=$('fuel').value;
+  if(ds===''||ps===''||isNaN(+ds)||isNaN(+ps)){S.innerHTML='<span>กรอกระยะทางและราคาน้ำมันเพื่อคำนวณค่าขนส่ง</span>';return null}
+  var d=+ds,p=+ps,band=Math.max(0,Math.ceil(d/50-1e-9)-1),col=Math.ceil(p-BASE_FUEL-1e-9);
+  if(d>600||d<0){w.textContent='ระยะทางเกิน 0–600 กม. ที่ตารางรองรับ ใช้ช่อง "ค่าขนส่งที่กำหนดเอง" แทน';band=Math.min(Math.max(band,0),11)}
+  if(col<0||col>COLS-1){w.textContent=(w.textContent?w.textContent+' · ':'')+'ราคาน้ำมันอยู่นอกช่วง 25.19–50.19 ใช้คอลัมน์ใกล้สุด';col=Math.min(Math.max(col,0),COLS-1)}
+  var ton=START[band]+STEP*col,kg=ton/1000;
+  S.innerHTML='<span>ช่วงระยะทาง <b>'+(band*50+(band?1:0))+'–'+((band+1)*50)+'</b> กม.</span><span>คอลัมน์น้ำมัน <b>'+(BASE_FUEL+col).toFixed(2)+'</b></span><span>ค่าขนส่ง <b>'+ton+'</b> บาท/ตัน = <b>'+kg.toFixed(3)+'</b> บาท/กก.</span>';
+  return kg;
+}
+function render(){
+  var T=transport(),b=parseFloat($('base').value),p=parseFloat($('profit').value)||0;
+  var miss=[];if(!(b>0))miss.push('ราคา FG');if(T===null)miss.push('ระยะทางและราคาน้ำมัน');
+  if(miss.length){data=null;$('out').innerHTML='<div class="empty">กรอก'+miss.join(' และ ')+'เพื่อดูตารางราคา</div>';$('print').disabled=$('copy').disabled=true;return}
+  var net=b-T;data=[];
+  var h='<table><thead><tr><th>ช่วงความชื้น</th><th>เบอร์ 2</th><th>เบอร์ 3</th></tr></thead><tbody>';
+  for(var i=0;i<rows;i++){
+    var lab=(14.1+0.5*i).toFixed(1)+'% – '+(14.5+0.5*i).toFixed(1)+'%';
+    var p2=r2(net*(1-0.007*i)-p),p3=r2(p2-0.10);
+    data.push([lab,f(p2),f(p3)]);
+    h+='<tr><td>'+lab+'</td><td>'+f(p2)+'</td><td>'+f(p3)+'</td></tr>';
+  }
+  $('out').innerHTML=h+'</tbody></table>';$('print').disabled=$('copy').disabled=false;
+}
+async function drawPdf(){
+  var W=1240,H=1754,c=document.createElement('canvas');c.width=W;c.height=H;var x=c.getContext('2d');
+  var F='"IBM Plex Sans Thai",sans-serif';
+  try{await Promise.all(['400 28px','600 28px','700 28px'].map(function(s){return document.fonts.load(s+' '+F)}))}catch(e){}
+  x.fillStyle='#fff';x.fillRect(0,0,W,H);
+  x.fillStyle='#0b3d2e';x.textBaseline='alphabetic';x.textAlign='left';x.font='700 54px '+F;x.fillText('ประกาศราคารับซื้อข้าวโพดอาหารสัตว์',90,130);
+  var dt=new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
+  x.fillStyle='#444';x.font='400 30px '+F;x.fillText('ประกาศ ณ วันที่ '+dt+'  ·  หน่วย: บาท/กก.',90,190);
+  var tx=90,tw=1060,ty=235,hh=64,rh=42,c2=tx+tw*0.7,c3=tx+tw-26;
+  x.fillStyle='#0b3d2e';x.fillRect(tx,ty,tw,hh);
+  x.fillStyle='#fff';x.font='600 30px '+F;x.textAlign='left';x.fillText('ช่วงความชื้น',tx+26,ty+43);
+  x.textAlign='right';x.fillText('เบอร์ 2',c2,ty+43);x.fillText('เบอร์ 3',c3,ty+43);
+  data.forEach(function(r,i){
+    var y=ty+hh+i*rh;
+    if(i===0||i%2===1){x.fillStyle=i===0?'#dcebe2':'#eef3f0';x.fillRect(tx,y,tw,rh)}
+    x.fillStyle='#ccd5cf';x.fillRect(tx,y+rh-1,tw,1);
+    x.fillStyle='#111';x.textAlign='left';x.font='400 28px '+F;x.fillText(r[0],tx+26,y+30);
+    x.textAlign='right';x.font='700 28px '+F;x.fillText(r[1],c2,y+30);x.font='400 28px '+F;x.fillText(r[2],c3,y+30);
+  });
+  return await new Promise(function(res){c.toBlob(res,'image/jpeg',0.93)});
+}
+function makePdf(jpg,w,h){
+  var enc=new TextEncoder(),parts=[],off=0,o=[];
+  function add(v){var b=typeof v==='string'?enc.encode(v):v;parts.push(b);off+=b.length}
+  add('%PDF-1.4\n');
+  o[1]=off;add('1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n');
+  o[2]=off;add('2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n');
+  o[3]=off;add('3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 595.28 841.89]/Resources<</XObject<</Im0 4 0 R>>>>/Contents 5 0 R>>endobj\n');
+  o[4]=off;add('4 0 obj<</Type/XObject/Subtype/Image/Width '+w+'/Height '+h+'/ColorSpace/DeviceRGB/BitsPerComponent 8/Filter/DCTDecode/Length '+jpg.length+'>>stream\n');add(jpg);add('\nendstream endobj\n');
+  var cs='q 595.28 0 0 841.89 0 0 cm /Im0 Do Q';
+  o[5]=off;add('5 0 obj<</Length '+cs.length+'>>stream\n'+cs+'\nendstream endobj\n');
+  var xr=off;add('xref\n0 6\n0000000000 65535 f \n');
+  for(var i=1;i<=5;i++)add(('0000000000'+o[i]).slice(-10)+' 00000 n \n');
+  add('trailer<</Size 6/Root 1 0 R>>\nstartxref\n'+xr+'\n%%EOF');
+  return new Blob(parts,{type:'application/pdf'});
+}
+$('print').addEventListener('click',async function(){
+  if(!data)return;
+  var btn=$('print'),old=btn.textContent,hint=$('phint');btn.disabled=true;btn.textContent='กำลังสร้าง PDF...';
+  try{
+    var jb=await drawPdf(),jpg=new Uint8Array(await jb.arrayBuffer()),pdf=makePdf(jpg,1240,1754);
+    var name='corn-price-'+new Date().toISOString().slice(0,10)+'.pdf',d=null;
+    try{d=window.claude&&await window.claude.use('downloads')}catch(e){}
+    if(d){await d.save({filename:name,data:pdf})}
+    else{var u=URL.createObjectURL(pdf),a=document.createElement('a');a.href=u;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(u)},8000)}
+  }catch(e){if(!e||e.code!=='declined')hint.textContent='สร้างไฟล์ PDF ไม่สำเร็จ ลองใหม่อีกครั้ง'}
+  btn.textContent=old;btn.disabled=false;
+});
+$('copy').addEventListener('click',function(){
+  if(!data)return;
+  var txt='ช่วงความชื้น\tเบอร์ 2\tเบอร์ 3\n'+data.map(function(r){return r.join('\t')}).join('\n');
+  var done=function(){$('copy').textContent='คัดลอกแล้ว'};
+  try{navigator.clipboard.writeText(txt).then(done,done)}catch(e){done()}
+});
+document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',render)});
+render();
+})();
+</script>
+
+</body>
+</html>
