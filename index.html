@@ -115,11 +115,11 @@ function render(){
   var T=transport(),b=parseFloat($('base').value),p=parseFloat($('profit').value)||0;
   var miss=[];if(!(b>0))miss.push('ราคา FG');if(T===null)miss.push('ระยะทางและราคาน้ำมัน');
   if(miss.length){data=null;$('out').innerHTML='<div class="empty">กรอก'+miss.join(' และ ')+'เพื่อดูตารางราคา</div>';$('print').disabled=$('copy').disabled=true;return}
-  var net=b-T;data=[];
+  var net=b-p;data=[];
   var h='<table><thead><tr><th>ช่วงความชื้น</th><th>เบอร์ 2</th><th>เบอร์ 3</th></tr></thead><tbody>';
   for(var i=0;i<rows;i++){
     var lab=(14.1+0.5*i).toFixed(1)+'% – '+(14.5+0.5*i).toFixed(1)+'%';
-    var p2=r2(net*(1-0.007*i)-p),p3=r2(p2-0.10);
+    var p2=r2(net*(1-0.007*i)-T),p3=r2(p2-0.10);
     data.push([lab,f(p2),f(p3)]);
     h+='<tr><td>'+lab+'</td><td>'+f(p2)+'</td><td>'+f(p3)+'</td></tr>';
   }
