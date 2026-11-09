@@ -133,16 +133,16 @@ async function drawPdf(){
   x.fillStyle='#0b3d2e';x.textBaseline='alphabetic';x.textAlign='left';x.font='700 54px '+F;x.fillText('ประกาศราคารับซื้อข้าวโพดอาหารสัตว์',90,130);
   var dt=new Date().toLocaleDateString('th-TH',{day:'numeric',month:'long',year:'numeric'});
   x.fillStyle='#444';x.font='400 30px '+F;x.fillText('ประกาศ ณ วันที่ '+dt+'  ·  หน่วย: บาท/กก.',90,190);
-  var tx=90,tw=1060,ty=235,hh=64,rh=42,c2=tx+tw*0.7,c3=tx+tw-26;
+  var tx=90,tw=1060,ty=235,hh=64,rh=42,c2=tx+tw*0.625,c3=tx+tw*0.875;
   x.fillStyle='#0b3d2e';x.fillRect(tx,ty,tw,hh);
   x.fillStyle='#fff';x.font='600 30px '+F;x.textAlign='left';x.fillText('ช่วงความชื้น',tx+26,ty+43);
-  x.textAlign='right';x.fillText('เบอร์ 2',c2,ty+43);x.fillText('เบอร์ 3',c3,ty+43);
+  x.textAlign='center';x.fillText('เบอร์ 2',c2,ty+43);x.fillText('เบอร์ 3',c3,ty+43);
   data.forEach(function(r,i){
     var y=ty+hh+i*rh;
     if(i===0||i%2===1){x.fillStyle=i===0?'#dcebe2':'#eef3f0';x.fillRect(tx,y,tw,rh)}
     x.fillStyle='#ccd5cf';x.fillRect(tx,y+rh-1,tw,1);
     x.fillStyle='#111';x.textAlign='left';x.font='400 28px '+F;x.fillText(r[0],tx+26,y+30);
-    x.textAlign='right';x.font='700 28px '+F;x.fillText(r[1],c2,y+30);x.font='400 28px '+F;x.fillText(r[2],c3,y+30);
+    x.textAlign='center';x.font='700 28px '+F;x.fillText(r[1],c2,y+30);x.font='400 28px '+F;x.fillText(r[2],c3,y+30);
   });
   return await new Promise(function(res){c.toBlob(res,'image/jpeg',0.93)});
 }
