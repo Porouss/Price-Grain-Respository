@@ -71,21 +71,13 @@ select:focus{outline:none;border-color:var(--green2);background:var(--bg)}
 
 <div class="side">
 <section class="panel">
-<h2>1. ราคาและกำไร</h2>
-<div class="grid">
-<label>ราคาที่ความชื้น 14.5% (FG) (บาท/กก.)<input id="base" type="number" step="any"></label>
-<label>กำไรที่ต้องการ (บาท/กก.)<input id="profit" type="number" step="any"></label>
-</div>
-</section>
-
-<section class="panel">
-<h2>2. ค่าขนส่ง</h2>
+<h2>ต้นทาง ปลายทาง</h2>
 <div class="grid">
 <div><label for="origin">ต้นทาง</label>
 <div class="ac"><input id="origin" type="text" autocomplete="off"><div id="sug" class="sug" hidden></div></div>
 <div class="hint" id="ohint">พิมพ์พิกัด (lat,long) หรือ ตำบล อำเภอ จังหวัด</div></div>
 <label>ปลายทาง (โรงงาน)<select id="dest"><option value="">เลือกโรงงาน</option></select></label>
-<input id="kf" type="hidden" value="1.25">
+<input id="kf" type="hidden" value="1.28">
 <label>ระยะทาง (กม.)<input id="dist" type="number" step="any"><div class="hint">คำนวณให้อัตโนมัติ หรือกรอกเองได้ · ตารางรองรับ 0–600 กม.</div></label>
 <div class="sum" id="dinfo"></div>
 <label>ราคาน้ำมัน (บาท/ลิตร)<input id="fuel" type="number" step="any"><div class="hint">ตารางรองรับ 25.19–50.19</div></label>
@@ -93,6 +85,14 @@ select:focus{outline:none;border-color:var(--green2);background:var(--bg)}
 </div>
 <div class="sum" id="sum" style="margin-top:12px"></div>
 <div class="warn" id="warn"></div>
+</section>
+
+<section class="panel">
+<h2>ราคาและกำไร</h2>
+<div class="grid">
+<label>ราคาที่ความชื้น 14.5% (FG) (บาท/กก.)<input id="base" type="number" step="any"></label>
+<label>กำไรที่ต้องการ (บาท/กก.)<input id="profit" type="number" step="any"></label>
+</div>
 </section>
 </div>
 <div class="res">
@@ -201,7 +201,7 @@ function hav(a,b,c,d){var R=6371.0088,r=Math.PI/180,p1=a*r,p2=c*r,dp=p2-p1,dl=(d
 function recalc(){
   var di=$('dinfo');
   if(!origin||$('dest').value===''){di.innerHTML='';if(auto){$('dist').value='';auto=false;render()}return}
-  var f=FACT[+$('dest').value],k=parseFloat($('kf').value)||1.25;
+  var f=FACT[+$('dest').value],k=parseFloat($('kf').value)||1.28;
   var s=hav(origin[0],origin[1],f[1],f[2]),t=s*k;
   $('dist').value=t.toFixed(1);auto=true;
   di.innerHTML='<span>ระยะทางประมาณ <b>'+t.toFixed(1)+'</b> กม.</span>';
