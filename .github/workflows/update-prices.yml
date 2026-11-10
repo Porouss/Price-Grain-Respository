@@ -1,6 +1,9 @@
 name: Update diesel price
 
 on:
+  push:
+    paths:
+      - ".github/workflows/update-prices.yml"
   schedule:
     - cron: "30 0 * * *"
     - cron: "0 8 * * *"
