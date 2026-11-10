@@ -249,9 +249,13 @@ function thDate(x){var d=new Date(x+'T00:00:00');return isNaN(d)?x:d.toLocaleDat
 function showCpf(){
   var b=$('base'),h=$('bhint'),i=$('dest').value;
   b.placeholder='';h.textContent='';
-  if(!PR||!PR.cpf||i==='')return;
-  var name=FACT[+i][0],c=PR.cpf[name];
-  if(!c||!(c.price>0))return;
+  if(i==='')return;
+  var name=FACT[+i][0];
+  if(PR===false){h.textContent='อ่านไฟล์ prices.json ไม่ได้ (ใช้ได้เฉพาะหน้าที่ฝากบนเว็บ)';return}
+  if(!PR)return;
+  if(!PR.cpf||!Object.keys(PR.cpf).length){h.textContent='ยังไม่มีราคา CPF ใน prices.json ให้ตรวจแท็บ Actions';return}
+  var c=PR.cpf[name];
+  if(!c||!(c.price>0)){h.textContent='ไม่มีราคาของ '+name+' ในชีต';return}
   b.placeholder=c.price.toFixed(2);
   h.textContent='ราคาประกาศ '+name+' ล่าสุด '+c.price.toFixed(2)+' บาท/กก. ('+thDate(c.date)+') ';
   var a=document.createElement('a');a.href='#';a.textContent='ใช้ราคานี้';
@@ -260,7 +264,7 @@ function showCpf(){
 }
 $('dest').addEventListener('change',showCpf);
 if(window.fetch)fetch('prices.json?'+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(j){
-  if(!j)return;
+  if(!j){PR=false;showCpf();return}
   PR=j;
   if(j.diesel>0){
     $('fuel').placeholder=j.diesel.toFixed(2);
@@ -268,7 +272,7 @@ if(window.fetch)fetch('prices.json?'+Date.now()).then(function(r){return r.ok?r.
     if(h)h.textContent='ดีเซล B7 ล่าสุด '+j.diesel.toFixed(2)+' บาท/ลิตร ('+j.date_th+') · ตารางรองรับ 25.19–50.19';
   }
   showCpf();
-}).catch(function(){});
+}).catch(function(){PR=false;showCpf()});
 render();
 })();
 </script>

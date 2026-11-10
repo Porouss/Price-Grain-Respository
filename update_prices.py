@@ -50,19 +50,45 @@ def parse_diesel(text):
 
 
 # ---------- ราคา CPF จากชีต ----------
+def parse_date(s):
+    """รับ m/d/yyyy, d/m/yyyy, yyyy-mm-dd และปี พ.ศ."""
+    s = s.strip()
+    m = re.fullmatch(r"(\d{1,4})[/-](\d{1,2})[/-](\d{1,4})", s)
+    if not m:
+        return None
+    a, b, c = (int(x) for x in m.groups())
+    if a > 31:
+        y, mo, d = a, b, c            # yyyy-mm-dd
+    else:
+        y = c + 2000 if c < 100 else c
+        mo, d = (a, b) if a <= 12 else (b, a)   # ปกติ m/d ถ้าเดือนเกิน 12 ให้สลับ
+    if y > 2400:
+        y -= 543
+    try:
+        return datetime.date(y, mo, d)
+    except ValueError:
+        return None
+
+
 def parse_cpf(text):
     rows = list(csv.reader(io.StringIO(text)))
-    head = [re.sub(r"\s+", " ", c).strip() for c in rows[0]]
+    hi = next((i for i, r in enumerate(rows[:10]) if any("CPF บางนา" in c for c in r)), None)
+    if hi is None:
+        raise ValueError("ไม่พบแถวหัวตาราง (CPF บางนา) ในชีต")
+    head = [re.sub(r"\s+", " ", c).strip() for c in rows[hi]]
     idx = {n: head.index(n) for n in CPF if n in head}
     missing = [n for n in CPF if n not in idx]
     last = {}
-    for r in rows[2:]:                      # แถว 1 = ชื่อ, แถว 2 = รหัสย่อ, ต่อจากนั้นเป็นรายวัน
+    dated = 0
+    newest = None
+    for r in rows[hi + 1:]:                 # หลังหัวตาราง: รหัสย่อ แล้วต่อด้วยแถวรายวัน
         if not r:
             continue
-        try:
-            d = datetime.datetime.strptime(r[0].strip(), "%m/%d/%Y").date()
-        except ValueError:
+        d = parse_date(r[0])
+        if d is None:
             continue
+        dated += 1
+        newest = d if newest is None or d > newest else newest
         for n, i in idx.items():
             if i >= len(r):
                 continue
@@ -75,6 +101,9 @@ def parse_cpf(text):
             prev = last.get(n)
             if prev is None or d >= prev[1]:
                 last[n] = (v, d)
+    print(f"sheet: {len(rows)} rows, {dated} dated rows, newest date {newest}")
+    if not dated:
+        raise ValueError("ไม่พบแถวที่มีวันที่ในคอลัมน์แรก (รูปแบบวันที่อาจเปลี่ยน)")
     if not last:
         raise ValueError("ไม่พบราคา CPF ในชีต")
     return {n: {"price": v, "date": d.isoformat()} for n, (v, d) in last.items()}, missing
