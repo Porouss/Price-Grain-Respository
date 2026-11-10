@@ -59,6 +59,8 @@ select:focus{outline:none;border-color:var(--green2);background:var(--bg)}
 .sug div{padding:9px 13px;cursor:pointer;font-size:.95rem}
 .sug div:hover,.sug div.on{background:var(--hi)}
 .sug div small{color:var(--muted)}
+.hint a{color:var(--green2);font-weight:600;text-decoration:none}
+.hint a:hover{text-decoration:underline}
 .pr{display:none}
 @media (max-width:820px){main{grid-template-columns:minmax(0,1fr)}.side{position:static}.top{padding-bottom:70px}}
 @media print{body{background:#fff;color:#000}.top,.side,.bar{display:none!important}main{display:block;margin:0;padding:0;max-width:none}.pr{display:block}.pr h2{margin:0;font-size:17pt;color:#0b3d2e}.pr p{margin:2px 0 10px;color:#444;font-size:11pt}.tw{box-shadow:none;border-radius:0}table{font-size:10.5pt}th{background:#0b3d2e!important;color:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;padding:6px 10px}td{padding:2px 10px;color:#000;border-bottom:1px solid #ccc}tbody tr:nth-child(even),tbody tr:first-child{background:#eef3f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}@page{size:A4;margin:14mm}}
@@ -90,7 +92,7 @@ select:focus{outline:none;border-color:var(--green2);background:var(--bg)}
 <section class="panel">
 <h2>ราคาและกำไร</h2>
 <div class="grid">
-<label>ราคาที่ความชื้น 14.5% (FG) (บาท/กก.)<input id="base" type="number" step="any"></label>
+<label>ราคาที่ความชื้น 14.5% (FG) (บาท/กก.)<input id="base" type="number" step="any"><div class="hint" id="bhint"></div></label>
 <label>กำไรที่ต้องการ (บาท/กก.)<input id="profit" type="number" step="any"></label>
 </div>
 </section>
@@ -242,11 +244,30 @@ $('dest').addEventListener('change',recalc);
 $('kf').addEventListener('input',recalc);
 $('dist').addEventListener('input',function(){auto=false});
 document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',render)});
+var PR=null;
+function thDate(x){var d=new Date(x+'T00:00:00');return isNaN(d)?x:d.toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'})}
+function showCpf(){
+  var b=$('base'),h=$('bhint'),i=$('dest').value;
+  b.placeholder='';h.textContent='';
+  if(!PR||!PR.cpf||i==='')return;
+  var name=FACT[+i][0],c=PR.cpf[name];
+  if(!c||!(c.price>0))return;
+  b.placeholder=c.price.toFixed(2);
+  h.textContent='ราคาประกาศ '+name+' ล่าสุด '+c.price.toFixed(2)+' บาท/กก. ('+thDate(c.date)+') ';
+  var a=document.createElement('a');a.href='#';a.textContent='ใช้ราคานี้';
+  a.addEventListener('click',function(e){e.preventDefault();b.value=c.price.toFixed(2);render()});
+  h.appendChild(a);
+}
+$('dest').addEventListener('change',showCpf);
 if(window.fetch)fetch('prices.json?'+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(j){
-  if(!j||!(j.diesel>0))return;
-  $('fuel').placeholder=j.diesel.toFixed(2);
-  var h=$('fuel').parentNode.querySelector('.hint');
-  if(h)h.textContent='ดีเซล B7 ล่าสุด '+j.diesel.toFixed(2)+' บาท/ลิตร ('+j.date_th+') · ตารางรองรับ 25.19–50.19';
+  if(!j)return;
+  PR=j;
+  if(j.diesel>0){
+    $('fuel').placeholder=j.diesel.toFixed(2);
+    var h=$('fuel').parentNode.querySelector('.hint');
+    if(h)h.textContent='ดีเซล B7 ล่าสุด '+j.diesel.toFixed(2)+' บาท/ลิตร ('+j.date_th+') · ตารางรองรับ 25.19–50.19';
+  }
+  showCpf();
 }).catch(function(){});
 render();
 })();
