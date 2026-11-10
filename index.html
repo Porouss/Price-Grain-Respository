@@ -180,6 +180,12 @@ $('copy').addEventListener('click',function(){
   try{navigator.clipboard.writeText(txt).then(done,done)}catch(e){done()}
 });
 document.querySelectorAll('input').forEach(function(e){e.addEventListener('input',render)});
+fetch('prices.json?'+Date.now()).then(function(r){return r.ok?r.json():null}).then(function(j){
+  if(!j||!(j.diesel>0))return;
+  $('fuel').placeholder=j.diesel.toFixed(2);
+  var h=$('fuel').parentNode.querySelector('.hint');
+  if(h)h.textContent='ดีเซล B7 ล่าสุด '+j.diesel.toFixed(2)+' บาท/ลิตร ('+j.date_th+') · ตารางรองรับ 25.19–50.19';
+}).catch(function(){});
 render();
 })();
 </script>
